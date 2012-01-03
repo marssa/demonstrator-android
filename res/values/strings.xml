@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, FrontEndAndroidActivity!</string>
+    <string name="app_name">FrontEndAndroid</string>
+    <string name="btndup">dup</string>
+    <string name="btnup">Up</string>
+    <string name="btndown">Down</string>
+    <string name="btnddown">DDown</string>
+    <string name="btnRight">Right</string>
+    <string name="btndright">DRight</string>
+    <string name="btnLeft">Left</string>
+    <string name="DLeft">btnLeft</string>
+    <string name="btnleft">DLeft</string>
+
+</resources>
