@@ -16,48 +16,45 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class FrontEndAndroidActivity extends Activity {
 	/** Called when the activity is first created. */
 
-	// url for android device
-	String url = "http://192.168.2.106:8182/";
-
+	
+	//url for server
+	String url = "http://192.168.2.1:8082/demonstrator-backend-web/rest/";
+	
+	
+	// url for trimslice
+	//String url = "http://192.168.2.104:8080/demonstrator-backend-web/rest/";	
+	
+	
 	String result = "";
 	Handler h = new Handler();
-	TextView date;
-	TextView responsetxt;
-	String navi = "nav";
-	String underw = "Under";
-	TextView txtv;
-	TextView txtu;
-	TextView txtr;
-
+	boolean navUnder;
+	ImageView speed;
 	ToggleButton tbunl;
 	ToggleButton tbnav1;
+	ImageView lights;
 
-	// Timer timer = new;
+	
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-
-		txtu = (TextView) findViewById(R.id.txtspeed);
-		// txtu.setText("Speed:");
-
-		txtr = (TextView) findViewById(R.id.txtrudder);
+		setContentView(R.layout.main2);
 
 		TabHost tabhost = (TabHost) findViewById(R.id.tabHost);
 		tabhost.setup();
-
+		speed = (ImageView)findViewById(R.id.imageView_speed);
 		TabSpec spec1 = tabhost.newTabSpec("Drive");
-		spec1.setContent(R.id.tab1); 
-		spec1.setIndicator("Drive", getResources().getDrawable(R.drawable.drive));
+		spec1.setContent(R.id.tab1);
+		spec1.setIndicator("Drive", getResources()
+				.getDrawable(R.drawable.drive));
 
 		TabSpec spec2 = tabhost.newTabSpec("Light Control");
 		spec2.setContent(R.id.tab2);
@@ -80,23 +77,17 @@ public class FrontEndAndroidActivity extends Activity {
 		tbnav1 = (ToggleButton) findViewById(R.id.toggleNavLights);
 		tbnav1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (((ToggleButton) v).isChecked()) {
-					try {
+				try {
+					if (((ToggleButton) v).isChecked()) {
 						changenavtrue();
-					} catch (Exception e) {
-
-						Toast.makeText(getBaseContext(), "An error happened",
-								Toast.LENGTH_SHORT);
-					}
-				} else {
-					try {
+						tbnav1.setChecked(true);
+					} else {
 						changenavfalse();
-
-					} catch (Exception e) {
-
-						Toast.makeText(getBaseContext(), "An error happened",
-								Toast.LENGTH_SHORT);
+						tbnav1.setChecked(false);
 					}
+				} catch (Exception e) {
+					Toast.makeText(getBaseContext(), "An error happened",
+							Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -106,37 +97,12 @@ public class FrontEndAndroidActivity extends Activity {
 		tbunl.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if (((ToggleButton) v).isChecked()) {
-					try {
-
-						changeunderwatertrue();
-						txtv.setText("true");
-
-					} catch (Exception e) {
-
-						try {
-							Displaymsg(e.getMessage());
-						} catch (JSONException e1) {
-
-							e1.printStackTrace();
-						}
-					}
-
-				} else
-					try {
-						changeunderwaterfalse();
-						txtv.setText("false");
-					} catch (Exception e) {
-
-						e.printStackTrace();
-					}
-			}
-		});
-
-		// Drive straight full speed
-		Button btndup = (Button) findViewById(R.id.btndoubleup);
-		btndup.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				doubleup();
+					changeunderwatertrue();
+					tbunl.setChecked(true);
+				} else {
+					changeunderwaterfalse();
+					tbunl.setChecked(false);
+				}
 			}
 		});
 
@@ -156,47 +122,7 @@ public class FrontEndAndroidActivity extends Activity {
 			}
 		});
 
-		// Full Reverse speed
-		Button btnddown = (Button) findViewById(R.id.btndoubledown);
-		btnddown.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				doubledown();
-			}
-		});
-
-		// Turn left
-		Button btnleft = (Button) findViewById(R.id.btnleft);
-		btnleft.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				left();
-			}
-		});
-
-		// Turn full left
-		Button btndleft = (Button) findViewById(R.id.btndoubleleft);
-		btndleft.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				doubleleft();
-			}
-		});
-
-		// Turn right
-		Button btnright = (Button) findViewById(R.id.btnright);
-		btnright.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				right();
-			}
-		});
-
-		// Turn full right
-		Button btndright = (Button) findViewById(R.id.btndright);
-		btndright.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				doubleright();
-			}
-		});
-
-		// Turn full right
+		// Stop
 		Button btnstop = (Button) findViewById(R.id.btnstop);
 		btnstop.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -204,16 +130,59 @@ public class FrontEndAndroidActivity extends Activity {
 			}
 		});
 
-		h.post(new Runnable() {
-			public void run() {
-				CheckStatus();
-				h.postDelayed(this, 1000);
+		// rotate left speed
+		Button btnLeft = (Button) findViewById(R.id.btnleft);
+		btnLeft.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				left();
 			}
 		});
 
+		// rotate right speed
+		Button btnRight = (Button) findViewById(R.id.btnright);
+		btnRight.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				right();
+			}
+		});
+
+		h.post(new Runnable() {
+			public void run() {
+				navigation();
+				underwater();
+				speed();
+				checkstatusforpic();
+				h.postDelayed(this, 1000);
+			}
+		});
+		
+		lights =(ImageView)findViewById(R.id.demimage);
 	}
 
-	private class Readspeed extends AsyncTask<String, Void, String> {
+	public void checkstatusforpic()
+	{
+		if(!tbnav1.isChecked() && !tbunl.isChecked())
+		{
+			lights.setImageResource(R.drawable.demonstratornightalloff);	
+		}
+		
+		else if(tbnav1.isChecked() && !tbunl.isChecked())
+		{
+			lights.setImageResource(R.drawable.demonstratornightnavon);
+		}
+		else if (!tbnav1.isChecked() && tbunl.isChecked())
+		{
+			lights.setImageResource(R.drawable.demonstratornightundwateron);
+		}
+		else if(tbnav1.isChecked() && tbunl.isChecked())
+		{
+			lights.setImageResource(R.drawable.demonstratornightallon);
+		}
+	}
+
+	public class WebServiceTaskGetn extends AsyncTask<String, Void, String> {
+		String result;
+		@Override
 		protected String doInBackground(String... urls) {
 			String response = "";
 			for (String url : urls) {
@@ -229,7 +198,6 @@ public class FrontEndAndroidActivity extends Activity {
 					while ((s = buffer.readLine()) != null) {
 						response += s;
 					}
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -237,90 +205,31 @@ public class FrontEndAndroidActivity extends Activity {
 			return response;
 		}
 
+		@Override
 		protected void onPostExecute(String result) {
+			this.result = result;
+			JSONObject jObject;
+			String navLights = null;
 			try {
-
-				checkspeed(result);
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+				jObject = new JSONObject(result);
+				navLights = jObject.getString("value");
+			} catch (JSONException e) {				
 				e.printStackTrace();
 			}
-		}
-	}
 
-	private void checkspeed(String msg) throws JSONException {
-		try {
-			if (msg == "") {
-				Toast.makeText(getBaseContext(), "Empty", Toast.LENGTH_SHORT);
-			} else if (msg == null) {
-				Toast.makeText(getBaseContext(), "null", Toast.LENGTH_SHORT);
-			} else {
-
-				JSONObject jObject = new JSONObject(msg);
-				JSONObject speed = jObject.getJSONObject("motor");
-				String sp = speed.getString("value");
-
-				txtu.setText("SPEED: " + sp);
-
-				JSONObject jObject2 = new JSONObject(msg);
-				JSONObject rudder = jObject2.getJSONObject("rudder");
-				String rud = rudder.getString("value");
-
-				txtr.setText("RUDDER: " + rud);
-
+			if (navLights == "false") {
+				tbnav1.setChecked(false);
+			} else if (navLights == "true") {
+				tbnav1.setChecked(true);
 			}
-		} catch (Exception ex) {
-			Toast.makeText(getBaseContext(), "error", Toast.LENGTH_SHORT);
 		}
 	}
 
-	private void Displaymsg(String msg) throws JSONException {
-		try {
+	public class WebServiceTaskSpeed extends AsyncTask<String, Void, String> {
 
-			if (msg == "") {
-				Toast.makeText(getBaseContext(), "empty", Toast.LENGTH_SHORT)
-						.show();
-			} else if (msg == null) {
-				Toast.makeText(getBaseContext(), "Null", Toast.LENGTH_SHORT)
-						.show();
-			} else {
+		String result;
 
-				JSONObject jObject = new JSONObject(msg);
-				JSONObject navlights = jObject.getJSONObject("navLights");
-				String nav = navlights.getString("value");
-
-				if (nav == "false") {
-					tbnav1.setChecked(false);
-				}
-
-				else if (nav == "true") {
-					tbnav1.setChecked(true);
-				}
-
-				JSONObject jObject2 = new JSONObject(msg);
-				JSONObject underwater = jObject2
-						.getJSONObject("underwaterLights");
-				String under = underwater.getString("value");
-
-				if (under == "false") {
-					tbunl.setChecked(false);
-
-				}
-
-				else if (under == "true") {
-					tbunl.setChecked(true);
-
-				}
-			}
-		} catch (Exception ex) {
-			Toast.makeText(getBaseContext(), ex.getMessage(),
-					Toast.LENGTH_SHORT);
-		}
-
-	}
-
-	private class Readmsg extends AsyncTask<String, Void, String> {
+		@Override
 		protected String doInBackground(String... urls) {
 			String response = "";
 			for (String url : urls) {
@@ -336,7 +245,6 @@ public class FrontEndAndroidActivity extends Activity {
 					while ((s = buffer.readLine()) != null) {
 						response += s;
 					}
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -344,89 +252,162 @@ public class FrontEndAndroidActivity extends Activity {
 			return response;
 		}
 
+		@Override
 		protected void onPostExecute(String result) {
-			try {
-				Displaymsg(result);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+			switch(Integer.valueOf(result)){
+			case 5:
+				speed.setImageResource(R.drawable.speed5);
+				break;
+			case 4:
+				speed.setImageResource(R.drawable.speed4);
+				break;
+			case 3:
+				speed.setImageResource(R.drawable.speed3);
+				break;
+			case 2:
+				speed.setImageResource(R.drawable.speed2);
+				break;
+			case 1:
+				speed.setImageResource(R.drawable.speed1);
+				break;
+			case 0:
+				speed.setImageResource(R.drawable.speed0);
+				break;
+			case -1:
+				speed.setImageResource(R.drawable.speed_1);
+				break;
+			case -2:
+				speed.setImageResource(R.drawable.speed_2);
+				break;
+			case -3:
+				speed.setImageResource(R.drawable.speed_3);
+				break;
+			case -4:
+				speed.setImageResource(R.drawable.speed_4);
+				break;
+			case -5:
+				speed.setImageResource(R.drawable.speed_5);
+				break;
 			}
 		}
 	}
 
-	public void CheckStatus() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "lightControlPage/statusAll" });
+	public class WebServiceTaskGetu extends AsyncTask<String, Void, String> {
 
-		Readspeed s = new Readspeed();
-		s.execute(new String[] { url + "motionControlPage/rudderAndSpeed" });
+		String result;
+
+		@Override
+		protected String doInBackground(String... urls) {
+			String response = "";
+			for (String url : urls) {
+				DefaultHttpClient client = new DefaultHttpClient();
+				HttpGet httpGet = new HttpGet(url);
+				try {
+					HttpResponse execute = client.execute(httpGet);
+					InputStream content = execute.getEntity().getContent();
+
+					BufferedReader buffer = new BufferedReader(
+							new InputStreamReader(content));
+					String s = "";
+					while ((s = buffer.readLine()) != null) {
+						response += s;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return response;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			this.result = result;
+			JSONObject jObject;
+			String navLights = null;
+			try {
+				jObject = new JSONObject(result);
+				navLights = jObject.getString("value");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			if (navLights == "false") {
+				tbunl.setChecked(false);
+			} else if (navLights == "true") {
+				tbunl.setChecked(true);
+			}
+		}
+		
+	}
+
+	public void navigation() {
+		WebServiceTaskGetn taskgetn = new WebServiceTaskGetn();
+		taskgetn.execute(new String[] { url + "lights/navigation" });
 
 	}
 
+	public void underwater() {
+		WebServiceTaskGetu taskgetu = new WebServiceTaskGetu();
+		taskgetu.execute(new String[] { url + "lights/underwater" });
+
+	}
+
+	public void speed() {
+		WebServiceTaskSpeed taskgetn = new WebServiceTaskSpeed();
+		taskgetn.execute(new String[] { url + "motors/stern/speed" });
+
+	}
+
+	// lights
 	public void changenavtrue() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "lighting/navigationLights/true" });
+		WebServiceTaskPut taskput = new WebServiceTaskPut();
+		taskput.execute(new String[] { url + "lights/navigation/true" });
 	}
 
 	public void changenavfalse() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "lighting/navigationLights/false" });
+		WebServiceTaskPut taskput = new WebServiceTaskPut();
+		taskput.execute(new String[] { url + "lights/navigation/false" });
 	}
 
 	public void changeunderwatertrue() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "lighting/underwaterLights/true" });
+		WebServiceTaskPut taskput = new WebServiceTaskPut();
+		taskput.execute(new String[] { url + "lights/underwater/true" });
 	}
 
 	public void changeunderwaterfalse() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "lighting/underwaterLights/false" });
+		WebServiceTaskPut taskput = new WebServiceTaskPut();
+		taskput.execute(new String[] { url + "lights/underwater/false" });
 	}
 
-	public void doubleup() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "motor/speed/100" });
-	}
+	// speed
 
 	public void up() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "motor/increaseSpeed" });
+		WebServiceTaskPut taskput = new WebServiceTaskPut();
+		taskput.execute(new String[] { url + "motors/stern/speed/increase" });
 	}
 
+	//
 	public void down() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "motor/decreaseSpeed" });
-	}
-
-	public void doubledown() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "motor/speed/-100" });
+		WebServiceTaskPut taskput = new WebServiceTaskPut();
+		taskput.execute(new String[] { url + "motors/stern/speed/decrease" });
 	}
 
 	public void stop() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "motor/speed/0" });
+		WebServiceTaskPut taskput = new WebServiceTaskPut();
+		taskput.execute(new String[] { url + "motors/stern/stop" });
 
 	}
 
 	public void right() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "rudder/rotateMore/true" });
-	}
-
-	public void doubleright() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "rudder/rotateFull/true" });
+		WebServiceTaskPut taskput = new WebServiceTaskPut();
+		taskput.execute(new String[] { url + "rudder/rotateMore/true" });
 	}
 
 	public void left() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "rudder/rotateMore/false" });
-	}
+		WebServiceTaskPut taskput = new WebServiceTaskPut();
+		taskput.execute(new String[] { url + "rudder/rotateMore/false" });
 
-	public void doubleleft() {
-		Readmsg task = new Readmsg();
-		task.execute(new String[] { url + "rudder/rotateFull/false" });
 	}
 
 }
