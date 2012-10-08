@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tabHost"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </TabWidget>
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <RelativeLayout
+                android:id="@+id/tab1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <Button
+                    android:id="@+id/btnup"
+                    android:layout_width="120sp"
+                    android:layout_height="120sp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="255dp"
+                    android:layout_marginTop="80dp"
+                    android:background="@drawable/arrow_up" />
+
+                <ImageView
+                    android:id="@+id/imageView_speed"
+                    android:layout_width="120sp"
+                    android:layout_height="580sp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="133dp"
+                    android:src="@drawable/speed0" />
+
+                <Button
+                    android:id="@+id/btndown"
+                    android:layout_width="120sp"
+                    android:layout_height="120sp"
+                    android:layout_alignLeft="@+id/btnup"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="83dp"
+                    android:background="@drawable/arrow_down" />
+
+                <Button
+                    android:id="@+id/btnright"
+                    android:layout_width="120sp"
+                    android:layout_height="120sp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="64dp"
+                    android:background="@drawable/arrow_right" />
+
+                <Button
+                    android:id="@+id/btnstop"
+                    android:layout_width="120sp"
+                    android:layout_height="120sp"
+                    android:layout_alignBaseline="@+id/btnright"
+                    android:layout_alignBottom="@+id/btnright"
+                    android:layout_alignLeft="@+id/btndown"
+                    android:background="@drawable/arrow_stop" />
+
+                <Button
+                    android:id="@+id/btnleft"
+                    android:layout_width="120sp"
+                    android:layout_height="120sp"
+                    android:layout_alignBaseline="@+id/btnstop"
+                    android:layout_alignBottom="@+id/btnstop"
+                    android:layout_marginRight="94dp"
+                    android:layout_toLeftOf="@+id/btnstop"
+                    android:background="@drawable/arrow_left" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/tab2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="100px" >
+
+                <ToggleButton
+                    android:id="@+id/toggleNavLights"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textOff="Navigation Lights OFF"
+                    android:textOn="Navigation Lights ON" />
+
+                <ToggleButton
+                    android:id="@+id/toggleUnderwaterLights"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textOff="UnderWater Lights OFF"
+                    android:textOn="UnderWater Lights ON" />
+
+                <ImageView
+                    android:id="@+android:id/demimage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/demonimage" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tab3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <com.google.android.maps.MapView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/mapview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:apiKey="0g5AlFwyaItEClcBAnRXB2qv10mmavXaRQ0ajwg"
+                    android:clickable="true" />
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+</TabHost>
